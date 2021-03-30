@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" styleClass="background" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hive.apps.cleveler.controller.MainController">
+   <children>
+      <Label layoutX="34.0" layoutY="44.0" text="CNC Leveler" />
+      <ComboBox layoutX="34.0" layoutY="104.0" prefHeight="25.0" prefWidth="251.0" />
+   </children>
+</AnchorPane>

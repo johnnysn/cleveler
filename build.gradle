@@ -1,0 +1,47 @@
+// Works with Gradle 6.3 and Java 14
+
+// To run this do:
+// ./gradlew run
+
+// To build a distribution zip:
+// ./gradlew distZip
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.8'
+}
+
+application {
+    mainClassName = "$moduleName/com.hive.apps.cleveler.Main"
+}
+
+sourceCompatibility = 11
+targetCompatibility = 11
+
+version = '0.0.2'
+group = 'com.hive.apps.cleveler'
+
+jar {
+    manifest {
+        attributes "Main-Class": "com.hive.apps.cleveler.Main"
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+javafx {
+    version = "11"
+    modules = [ 'javafx.controls', 'javafx.fxml']
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.fazecast:jSerialComm:[2.0.0,3.0.0)'
+    //compile 'org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api' //Dependency injection
+}
