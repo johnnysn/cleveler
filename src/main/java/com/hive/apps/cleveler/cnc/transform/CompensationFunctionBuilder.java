@@ -37,9 +37,10 @@ public class CompensationFunctionBuilder {
                 {t.x3.getX(), t.x3.getY(), 1d}
         };
 
-        t.a = CoefficientCalculator.calc(D, Z, t, 0);
-        t.b = CoefficientCalculator.calc(D, Z, t, 1);
-        t.c = CoefficientCalculator.calc(D, Z, t, 2);
+        var z = new double[]{Z.get(t.x1), Z.get(t.x2), Z.get(t.x3)};
+        t.a = CoefficientCalculator.calc(D, z, 0);
+        t.b = CoefficientCalculator.calc(D, z, 1);
+        t.c = CoefficientCalculator.calc(D, z, 2);
     }
 
 }
