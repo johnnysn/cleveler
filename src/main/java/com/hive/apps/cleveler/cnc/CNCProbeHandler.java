@@ -1,6 +1,8 @@
 package com.hive.apps.cleveler.cnc;
 
 import javafx.geometry.Point2D;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class CNCProbeHandler {
@@ -14,8 +16,7 @@ public class CNCProbeHandler {
     private int phase;
     private int coordIndex;
     private int coordPhase;
-
-    private double z;
+    private List<Double> Z;
 
     public CNCProbeHandler(CNCCommander cncCommander) {
         this.cncCommander = cncCommander;
@@ -27,11 +28,12 @@ public class CNCProbeHandler {
     public void startProbing(List<Point2D> coords) {
         cncCommander.sendProbingCommand(40);
         this.coords = coords;
+        this.Z = new ArrayList<>();
         phase = PROBING_INITIAL_POINT;
     }
 
     public void registerProbing(double z) {
-        this.z = z;
+        Z.add(z);
     }
 
     public void handleProbing() {

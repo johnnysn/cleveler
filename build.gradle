@@ -43,5 +43,7 @@ repositories {
 
 dependencies {
     compile 'com.fazecast:jSerialComm:[2.0.0,3.0.0)'
+    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
     //compile 'org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api' //Dependency injection
 }
+
