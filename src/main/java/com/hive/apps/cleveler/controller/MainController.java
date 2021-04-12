@@ -2,27 +2,32 @@ package com.hive.apps.cleveler.controller;
 
 import com.hive.apps.cleveler.cnc.transform.CompensationFuncion;
 import com.hive.apps.cleveler.service.GrblService;
+import com.hive.apps.cleveler.service.transform.TransformService;
 import com.hive.apps.cleveler.view.MainSceneManager;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainController extends AbstractController {
 
-    private GrblService service;
+    private GrblService grblService;
+    private TransformService transformService;
     private MainSceneManager sceneManager;
 
     private TimerTask checkerTask;
     private Timer timer;
 
     public MainController(MainSceneManager sceneManager) {
-        service = new GrblService(this);
+        grblService = new GrblService(this);
+        transformService = new TransformService();
         this.sceneManager = sceneManager;
     }
 
     public List<String> getPorts() {
-        return service.listAvailablePorts();
+        return grblService.listAvailablePorts();
     }
 
     public List<Integer> getBaudRates() {
@@ -30,7 +35,7 @@ public class MainController extends AbstractController {
     }
 
     public boolean connect(String port, int baudRate) {
-        var connected = service.connect(port, baudRate, this);
+        var connected = grblService.connect(port, baudRate, this);
         if (connected) {
             //startStatusChecker();
         }
@@ -43,25 +48,25 @@ public class MainController extends AbstractController {
             timer.cancel();
             timer.purge();
         }
-        service.disconnect();
+        grblService.disconnect();
     }
 
     public void sendCustomCmd(String cmd) {
-        service.sendCmd(cmd);
+        grblService.sendCmd(cmd);
     }
 
     public void sendLevelCmd(double width, double height, double offset) {
-        service.startLeveling(width, height, offset);
+        grblService.startLeveling(width, height, offset);
     }
 
     public double[] getMachineCoords() {
-        return service.getMachineCoords();
+        return grblService.getMachineCoords();
     }
 
     // TODO Design status checking policy
     private void startStatusChecker() {
         checkerTask = new TimerTask() { public void run() {
-            service.sendCmd("?\r");
+            grblService.sendCmd("?\r");
         }};
 
         timer = new Timer();
@@ -77,5 +82,10 @@ public class MainController extends AbstractController {
         if (data instanceof CompensationFuncion) { // Finished probing
             sceneManager.setProbingFunction(msg, (CompensationFuncion) data);
         }
+    }
+
+    public void transformGCodeFile(File file, CompensationFuncion function, String outputFileName)
+            throws IOException {
+        transformService.compensateZ(file, function, outputFileName);
     }
 }

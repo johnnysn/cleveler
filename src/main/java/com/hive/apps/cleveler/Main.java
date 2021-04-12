@@ -22,7 +22,7 @@ public class Main extends Application {
         //var url = ClassLoader.getSystemClassLoader().getResource("main.fxml");
         //Parent root = FXMLLoader.load(url);
 
-        mainSceneManager = new MainSceneManager();
+        mainSceneManager = new MainSceneManager(primaryStage);
 
         primaryStage.setTitle("Cleveler");
         primaryStage.initStyle(StageStyle.DECORATED);

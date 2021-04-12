@@ -25,4 +25,8 @@ class MainSceneBag {
     Label lblY;
     Label lblZ;
 
+    TextField txtFile;
+    Button btnFileChooser;
+    Button btnTransform;
+
 }

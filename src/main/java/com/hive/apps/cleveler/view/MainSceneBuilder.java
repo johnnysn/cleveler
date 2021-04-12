@@ -14,6 +14,8 @@ class MainSceneBuilder {
         var vBoxLeft = new VBox(10, buildPortsCombo(bag),
                 buildBoardSizeFields(bag),
                 buildLevelButton(bag),
+                buildFileSetupFields(bag),
+                buildTransformFields(bag),
                 buildCustomCmdField(bag));
         vBoxLeft.setPadding(new Insets(10));
         bag.txtConsole = new TextArea();
@@ -34,6 +36,22 @@ class MainSceneBuilder {
         bag.scene = new Scene(pane, 800, 480);
     }
 
+    private Node buildTransformFields(MainSceneBag bag) {
+        bag.btnTransform = new Button("Processar GCode");
+        return new HBox(5,
+                new VBox(bag.btnTransform));
+    }
+
+    private Node buildFileSetupFields(MainSceneBag bag) {
+        bag.txtFile = new TextField();
+        bag.txtFile.setMaxWidth(200);
+        var vBoxTxtFile = new VBox(new Label("Arquivo GCODE"), bag.txtFile);
+
+        bag.btnFileChooser = new Button("Arquivo");
+        return new HBox(5, vBoxTxtFile,
+                new VBox(new Label(""), bag.btnFileChooser));
+    }
+
     private Node buildLevelButton(MainSceneBag bag) {
         bag.btnLevel = new Button("Nivelar CNC");
         return new HBox(5, bag.btnLevel);
@@ -41,7 +59,8 @@ class MainSceneBuilder {
 
     private Node buildCustomCmdField(MainSceneBag bag) {
         bag.txtCmd = new TextField();
-        bag.txtCmd.setMaxWidth(200);
+        bag.txtCmd.setMaxWidth(250);
+        bag.txtCmd.setEditable(Boolean.FALSE);
         var vBoxField = new VBox(5, new Label("Comando manual"), bag.txtCmd);
 
         bag.btnSendCustom = new Button("Enviar");

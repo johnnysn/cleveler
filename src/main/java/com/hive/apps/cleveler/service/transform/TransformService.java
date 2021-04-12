@@ -8,8 +8,7 @@ import java.util.ArrayList;
 
 public class TransformService {
 
-    public void compensateZ(String cncFileName, CompensationFuncion function, String outputFileName) throws IOException {
-        File file = new File(cncFileName);
+    public void compensateZ(File file, CompensationFuncion function, String outputFileName) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(file));
 
         var lines = new ArrayList<String>();
