@@ -17,11 +17,11 @@ public class GrblService {
     private CNCInterpreter cncInterpreter;
     private LevelingService levelingService;
 
-    public GrblService() {
+    public GrblService(AbstractController controller) {
         cncStatus = new CNCStatus();
         uartHandler = new UartHandler();
         var cncCommander = new CNCCommander(uartHandler);
-        var probeHandler = new CNCProbeHandler(cncCommander);
+        var probeHandler = new CNCProbeHandler(cncCommander, controller);
         cncInterpreter = new CNCInterpreter(cncStatus, probeHandler);
         levelingService = new LevelingService(probeHandler);
     }

@@ -1,5 +1,6 @@
 package com.hive.apps.cleveler.view;
 
+import com.hive.apps.cleveler.cnc.transform.CompensationFuncion;
 import com.hive.apps.cleveler.controller.MainController;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -14,6 +15,8 @@ public class MainSceneManager {
     private MainController controller;
     private MainSceneBuilder builder;
     private MainSceneBag bag;
+
+    private CompensationFuncion probingFunction;
 
     private Alert alert;
 
@@ -87,7 +90,7 @@ public class MainSceneManager {
         bag.btnSendCustom.setDisable(!connected);
     }
 
-    public void printData(String data) {
+    public void printMessage(String data) {
         Platform.runLater(() -> bag.txtConsole.appendText(data));
     }
 
@@ -100,6 +103,12 @@ public class MainSceneManager {
         }));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
+    }
+
+    public void setProbingFunction(String msg, CompensationFuncion cf) {
+        this.printMessage(msg);
+        this.probingFunction = cf;
+        // TODO enable file processing controls
     }
 
     public void exit() {

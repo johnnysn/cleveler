@@ -62,7 +62,7 @@ public class CNCInterpreter implements UartReader {
 
     private void report(String msg) {
         if (controller != null)
-            controller.showData(msg + "\n");
+            controller.showMessage(msg + "\n");
     }
 
     private Pattern filterPattern;

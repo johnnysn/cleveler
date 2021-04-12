@@ -19,7 +19,8 @@ public class TransformService {
             if (line.length() > 0) lines.add(line);
         }
 
-        var newGcode = Compensator.compensateGCode(lines, function);
+        var compensator = new Compensator(lines, function);
+        var newGcode = compensator.run();
         FileWriter writer = new FileWriter(outputFileName);
         for(String str: newGcode) {
             writer.write(str + System.lineSeparator());

@@ -1,5 +1,7 @@
 package com.hive.apps.cleveler.cnc;
 
+import com.hive.apps.cleveler.cnc.transform.CompensationFunctionBuilder;
+import com.hive.apps.cleveler.controller.AbstractController;
 import javafx.geometry.Point2D;
 
 import java.util.ArrayList;
@@ -12,14 +14,16 @@ public class CNCProbeHandler {
     private static final int PROBING_FINISHED = 3;
 
     private final CNCCommander cncCommander;
+    private final AbstractController controller;
     private List<Point2D> coords;
     private int phase;
     private int coordIndex;
     private int coordPhase;
     private List<Double> Z;
 
-    public CNCProbeHandler(CNCCommander cncCommander) {
+    public CNCProbeHandler(CNCCommander cncCommander, AbstractController controller) {
         this.cncCommander = cncCommander;
+        this.controller = controller;
         this.phase = 0;
         phase = coordIndex = coordPhase = 0;
         coords = null;
@@ -51,6 +55,10 @@ public class CNCProbeHandler {
         } else if (phase == PROBING_FINISHED) {
             cncCommander.sendXYMotionCommand(0, 0);
             phase = coordIndex = coordPhase = 0;
+            controller.reportTask(
+                        "Processo de probing terminado.",
+                        CompensationFunctionBuilder.build(coords, Z)
+                    );
         }
     }
 

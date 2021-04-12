@@ -1,5 +1,6 @@
 package com.hive.apps.cleveler.controller;
 
+import com.hive.apps.cleveler.cnc.transform.CompensationFuncion;
 import com.hive.apps.cleveler.service.GrblService;
 import com.hive.apps.cleveler.view.MainSceneManager;
 
@@ -16,7 +17,7 @@ public class MainController extends AbstractController {
     private Timer timer;
 
     public MainController(MainSceneManager sceneManager) {
-        service = new GrblService();
+        service = new GrblService(this);
         this.sceneManager = sceneManager;
     }
 
@@ -57,6 +58,7 @@ public class MainController extends AbstractController {
         return service.getMachineCoords();
     }
 
+    // TODO Design status checking policy
     private void startStatusChecker() {
         checkerTask = new TimerTask() { public void run() {
             service.sendCmd("?\r");
@@ -67,7 +69,13 @@ public class MainController extends AbstractController {
     }
 
     @Override
-    public void showData(String msg) {
-        sceneManager.printData(msg);
+    public void showMessage(String msg) {
+        sceneManager.printMessage(msg);
+    }
+
+    public void reportTask(String msg, Object data) {
+        if (data instanceof CompensationFuncion) { // Finished probing
+            sceneManager.setProbingFunction(msg, (CompensationFuncion) data);
+        }
     }
 }
