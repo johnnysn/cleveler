@@ -5,7 +5,7 @@ import javafx.scene.control.*;
 
 class MainSceneBag {
 
-    public Button btnLevel;
+    Button btnLevel;
     Scene scene;
 
     ComboBox<String> cmbPorts;
@@ -27,6 +27,9 @@ class MainSceneBag {
 
     TextField txtFile;
     Button btnFileChooser;
+
+    TextField txtFileOutput;
+    Button btnFileSave;
     Button btnTransform;
 
 }

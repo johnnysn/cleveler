@@ -84,8 +84,8 @@ public class MainController extends AbstractController {
         }
     }
 
-    public void transformGCodeFile(File file, CompensationFuncion function, String outputFileName)
+    public void transformGCodeFile(File file, CompensationFuncion function, File outputFile)
             throws IOException {
-        transformService.compensateZ(file, function, outputFileName);
+        transformService.compensateZ(file, function, outputFile);
     }
 }

@@ -24,8 +24,10 @@ public class MainSceneManager {
 
     private CompensationFuncion probingFunction;
     private File inputFile;
+    private File outputFile;
 
-    private Alert alert;
+    private Alert alertError;
+    private Alert alertInfo;
 
     public MainSceneManager(Stage stage) {
         this.stage = stage;
@@ -42,27 +44,43 @@ public class MainSceneManager {
         bag.btnSendCustom.setOnAction(e -> sendCmd());
         bag.btnLevel.setOnAction(e -> level());
         bag.btnFileChooser.setOnAction(e -> chooseFile());
+        bag.btnFileSave.setOnAction(e -> saveFile());
         bag.btnTransform.setOnAction(e -> transform());
         // Preenchimento dos comboboxes
         bag.cmbPorts.getItems().addAll(controller.getPorts());
         bag.cmdBaud.getItems().addAll(controller.getBaudRates());
         switchConnection(false);
-        alert = new Alert(Alert.AlertType.ERROR);
+        alertError = new Alert(Alert.AlertType.ERROR);
+        alertInfo = new Alert(Alert.AlertType.INFORMATION);
         return bag.scene;
     }
 
     private void transform() {
-        if (probingFunction == null || inputFile == null) {
-            alert.setContentText("É necessário informar o arquivo de origem e realizar o probing da placa.");
-            alert.show();
+        if (probingFunction == null || inputFile == null || outputFile == null) {
+            alertError.setContentText("É necessário informar os arquivos de origem e destino após realizar o probing da placa.");
+            alertError.show();
             return;
         }
-        // TODO Implementar escolha do arquivo de saída
         try {
-            controller.transformGCodeFile(inputFile, probingFunction, "output_1.cnc");
+            controller.transformGCodeFile(inputFile, probingFunction, outputFile);
+            alertInfo.setContentText("Processamento finalizado.");
+            alertInfo.show();
         } catch (IOException e) {
-            alert.setContentText("Erro ao processar o arquivo.");
-            alert.show();
+            alertError.setContentText("Erro ao processar o arquivo.");
+            alertError.show();
+        }
+    }
+
+    private void saveFile() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Criar arquivo GCode de destino");
+        fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Arquivos CNC", "*.cnc"),
+                    new FileChooser.ExtensionFilter("Arquivos de texto", "*.txt")
+                );
+        outputFile = fileChooser.showSaveDialog(stage);
+        if (outputFile != null) {
+            bag.txtFileOutput.setText(outputFile.getName());
         }
     }
 
@@ -70,8 +88,9 @@ public class MainSceneManager {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Abrir arquivo GCode de origem");
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Arquivos de texto", "*.txt"),
-                new FileChooser.ExtensionFilter("Arquivos CNC", "*.cnc"));
+                    new FileChooser.ExtensionFilter("Arquivos CNC", "*.cnc"),
+                    new FileChooser.ExtensionFilter("Arquivos de texto", "*.txt")
+                );
         inputFile = fileChooser.showOpenDialog(stage);
         if (inputFile != null) {
             bag.txtFile.setText(inputFile.getName());
@@ -80,8 +99,8 @@ public class MainSceneManager {
 
     private void level() {
         if (bag.txtWidth.getText()==null || bag.txtHeight.getText()==null || bag.txtOffset.getText()==null) {
-            alert.setContentText("Favor, preencher informações da placa.");
-            alert.show();
+            alertError.setContentText("Favor, preencher informações da placa.");
+            alertError.show();
             return;
         }
 
@@ -91,8 +110,8 @@ public class MainSceneManager {
             var offset = Double.parseDouble(bag.txtOffset.getText());
             controller.sendLevelCmd(width, height, offset);
         } catch (NumberFormatException e) {
-            alert.setContentText("Formato numérico inv&aacutelido.");
-            alert.show();
+            alertError.setContentText("Formato numérico inv&aacutelido.");
+            alertError.show();
         }
     }
 
@@ -100,8 +119,8 @@ public class MainSceneManager {
         var baud = bag.cmdBaud.getValue();
         var port = bag.cmbPorts.getValue();
         if (baud == null || port == null || "".equals(port)) {
-            alert.setContentText("Você precisa informar a porta e o baud rate, seu baitola!");
-            alert.show();
+            alertError.setContentText("Você precisa informar a porta e o baud rate, seu baitola!");
+            alertError.show();
             return;
         }
 
@@ -130,6 +149,8 @@ public class MainSceneManager {
 
         bag.txtFile.setDisable(!connected);
         bag.btnFileChooser.setDisable(!connected);
+        bag.txtFileOutput.setDisable(!connected);
+        bag.btnFileSave.setDisable(!connected);
 
         inputFile = null;
         probingFunction = null;

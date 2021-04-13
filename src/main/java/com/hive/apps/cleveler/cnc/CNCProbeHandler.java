@@ -9,6 +9,8 @@ import java.util.List;
 
 public class CNCProbeHandler {
 
+    private static final double TRAVEL_Z = 5d;
+
     private static final int PROBING_INITIAL_POINT = 1;
     private static final int PROBING_FOUND_ZERO = 2;
     private static final int PROBING_FINISHED = 3;
@@ -37,7 +39,7 @@ public class CNCProbeHandler {
     }
 
     public void registerProbing(double z) {
-        Z.add(z);
+        Z.add(TRAVEL_Z + z);
     }
 
     public void handleProbing() {
@@ -49,17 +51,22 @@ public class CNCProbeHandler {
             if (coordIndex < coords.size())
                 handleCoord(coords.get(coordIndex));
             else {
-                cncCommander.sendZMotionCommand(5);
+                cncCommander.sendZMotionCommand(TRAVEL_Z);
                 phase = PROBING_FINISHED;
             }
         } else if (phase == PROBING_FINISHED) {
             cncCommander.sendXYMotionCommand(0, 0);
             phase = coordIndex = coordPhase = 0;
-            controller.reportTask(
-                        "Processo de probing terminado.",
-                        CompensationFunctionBuilder.build(coords, Z)
-                    );
+            finalizar();
         }
+    }
+
+    private void finalizar() {
+        controller.showMessage("Z = "+ Z);
+        controller.reportTask(
+                    "Processo de probing terminado.",
+                    CompensationFunctionBuilder.build(coords, Z)
+                );
     }
 
     private void handleCoord(Point2D point2D) {

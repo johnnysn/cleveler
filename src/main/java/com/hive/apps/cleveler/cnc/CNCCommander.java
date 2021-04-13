@@ -25,7 +25,7 @@ public class CNCCommander {
     // G21 G91 Z5 F500
     // $J=G21G91Z2F500
     void sendZMotionCommand(double z) {
-        var cmd = "$J=G21G91Z"+ z +"F500\r";
+        var cmd = "$J=G21G90Z"+ z +"F500\r";
         uartHandler.write(cmd.getBytes(StandardCharsets.UTF_8));
     }
 

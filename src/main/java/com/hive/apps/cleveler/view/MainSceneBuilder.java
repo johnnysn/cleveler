@@ -45,11 +45,21 @@ class MainSceneBuilder {
     private Node buildFileSetupFields(MainSceneBag bag) {
         bag.txtFile = new TextField();
         bag.txtFile.setMaxWidth(200);
-        var vBoxTxtFile = new VBox(new Label("Arquivo GCODE"), bag.txtFile);
-
-        bag.btnFileChooser = new Button("Arquivo");
-        return new HBox(5, vBoxTxtFile,
+        bag.txtFile.setEditable(Boolean.FALSE);
+        var vBoxTxtIn = new VBox(new Label("GCode Origem"), bag.txtFile);
+        bag.btnFileChooser = new Button("...");
+        var inputLine = new HBox(5, vBoxTxtIn,
                 new VBox(new Label(""), bag.btnFileChooser));
+
+        bag.txtFileOutput = new TextField();
+        bag.txtFileOutput.setMaxWidth(200);
+        bag.txtFileOutput.setEditable(Boolean.FALSE);
+        var vBoxTxtOut = new VBox(new Label("GCode Destino"), bag.txtFileOutput);
+        bag.btnFileSave = new Button("...");
+        var outputLine = new HBox(5, vBoxTxtOut,
+                new VBox(new Label(""), bag.btnFileSave));
+
+        return new VBox(inputLine, outputLine);
     }
 
     private Node buildLevelButton(MainSceneBag bag) {
