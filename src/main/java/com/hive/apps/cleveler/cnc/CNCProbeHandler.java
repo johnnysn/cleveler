@@ -9,7 +9,7 @@ import java.util.List;
 
 public class CNCProbeHandler {
 
-    private static final double TRAVEL_Z = 5d;
+    private static final double TRAVEL_Z = 2d;
 
     private static final int PROBING_INITIAL_POINT = 1;
     private static final int PROBING_FOUND_ZERO = 2;
@@ -22,6 +22,7 @@ public class CNCProbeHandler {
     private int coordIndex;
     private int coordPhase;
     private List<Double> Z;
+    private double z_probe_correction = 0;
 
     public CNCProbeHandler(CNCCommander cncCommander, AbstractController controller) {
         this.cncCommander = cncCommander;
@@ -32,14 +33,17 @@ public class CNCProbeHandler {
     }
 
     public void startProbing(List<Point2D> coords) {
-        cncCommander.sendProbingCommand(40);
+        cncCommander.sendProbingCommand(20);
         this.coords = coords;
         this.Z = new ArrayList<>();
         phase = PROBING_INITIAL_POINT;
     }
 
     public void registerProbing(double z) {
-        Z.add(TRAVEL_Z + z);
+        if (phase > PROBING_INITIAL_POINT)
+            Z.add(z_probe_correction + z);
+        else
+            z_probe_correction = -z;
     }
 
     public void handleProbing() {
@@ -55,7 +59,7 @@ public class CNCProbeHandler {
                 phase = PROBING_FINISHED;
             }
         } else if (phase == PROBING_FINISHED) {
-            cncCommander.sendXYMotionCommand(0, 0);
+            cncCommander.sendXYZMotionCommand(0, 0, 1);
             phase = coordIndex = coordPhase = 0;
             finalizar();
         }
@@ -71,13 +75,13 @@ public class CNCProbeHandler {
 
     private void handleCoord(Point2D point2D) {
         if (coordPhase == 0) {
-            cncCommander.sendZMotionCommand(5);
+            cncCommander.sendZMotionCommand(TRAVEL_Z);
             coordPhase = 1;
         } else if (coordPhase == 1) {
             cncCommander.sendXYMotionCommand(point2D.getX(), point2D.getY());
             coordPhase = 2;
         } else if (coordPhase == 2) {
-            cncCommander.sendProbingCommand(40);
+            cncCommander.sendProbingCommand(20);
             coordPhase = 3;
         } else if (coordPhase == 3) {
             // collect z

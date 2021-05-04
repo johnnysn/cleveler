@@ -29,6 +29,11 @@ public class CNCCommander {
         uartHandler.write(cmd.getBytes(StandardCharsets.UTF_8));
     }
 
+    void sendXYZMotionCommand(double x, double y, double z) {
+        var cmd = "G1 G90 X"+ x +" Y"+ y +" Z"+ z +" F200\r";
+        uartHandler.write(cmd.getBytes(StandardCharsets.UTF_8));
+    }
+
     // G38.2 Z-40 F40
     void sendProbingCommand(int speed) {
         var cmd = "G38.2 Z-40 F" + speed + "\r";
